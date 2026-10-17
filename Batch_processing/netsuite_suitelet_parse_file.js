@@ -5,6 +5,11 @@
 define(['N/https', 'N/task', 'N/log'], (https, task, log) => {
     
     const onRequest = async (context) => {
+
+
+        // HARDCODED SECURE KEY (Or manage via a custom record / configuration file)
+        const SECRET_AUTH_TOKEN = 'your-super-secure-custom-api-token-12345';
+
         // Enforce that this logic only triggers on incoming POST requests
         if (context.request.method !== 'POST') {
             context.response.setHeader({ name: 'Content-Type', value: 'text/plain' });
@@ -13,6 +18,20 @@ define(['N/https', 'N/task', 'N/log'], (https, task, log) => {
         }
 
         try {
+
+            // 1. EXTRA SECURITY: Validate the inbound authorization token
+            // Note: NetSuite request header keys are converted to lowercase
+            const incomingToken = context.request.headers['x-custom-auth-token'];
+
+            if (!incomingToken || incomingToken !== SECRET_AUTH_TOKEN) {
+                context.response.setHeader({ name: 'Content-Type', value: 'application/json' });
+                context.response.write(JSON.stringify({ 
+                    status: 'Error', 
+                    message: 'Authentication failed. Invalid or missing X-Custom-Auth-Token header.' 
+                }));
+                return;
+            }
+
             // 1. Suitelets capture form-data files via context.request.files
             const requestFiles = context.request.files;
             
