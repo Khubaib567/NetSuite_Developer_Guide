@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const app = express();
 
 // Ensures Express natively processes the incoming "application/json" payload
-app.use(bodyParser.json({ limit: '50mb' })); 
+app.use(bodyParser.json({ limit: '10mb' })); 
 
 app.post('/extract-excel', (req, res) => {
     try {

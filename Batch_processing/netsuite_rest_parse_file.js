@@ -4,7 +4,7 @@
  */
 define(['N/https', 'N/task', 'N/log'], (https, task, log) => {
     
-    const post = (requestBody) => {
+    const post = async (requestBody) => {
         try {
             // 1. Ensure the incoming payload is an object containing our base64 string
             if (!requestBody || !requestBody.excelBase64Data) {
@@ -12,12 +12,12 @@ define(['N/https', 'N/task', 'N/log'], (https, task, log) => {
             }
 
             // 2. Forward the structured JSON object payload safely over to your Node.js endpoint
-            const nodeServiceUrl = 'https://your-node-api-endpoint.com';
-            const response = https.post({
+            const nodeServiceUrl = 'https://your-node-api-endpoint.com/extract-excel';
+            const response = await https.post.promise({
                 url: nodeServiceUrl,
                 body: JSON.stringify({ fileData: requestBody.excelBase64Data }), // Matching content and body type
                 headers: { 
-                    'Content-Type': 'application/json' // Explicitly JSON format
+                    'Content-Type': 'multipart/form-data' // Explicitly JSON format
                 }
             });
 
