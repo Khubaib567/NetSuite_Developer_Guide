@@ -10,13 +10,14 @@ app.use(bodyParser.json({ limit: '10mb' }));
 app.post('/extract-excel', (req, res) => {
     try {
         // Extract string from matching JSON property payload
-        const base64String = req.body.fileData; 
-        if (!base64String) {
-            return res.status(400).json({ error: 'Payload validation failed: Missing fileData key.' });
+        const excelbase64Data = req.body.fileData; 
+        
+        if (!excelbase64Data) {
+            return res.status(400).json({ error: 'Empty base-64 string!' });
         }
 
         // 1. Decode the text base64 back into its original binary spreadsheet state
-        const fileBuffer = Buffer.from(base64String, 'base64');
+        const fileBuffer = Buffer.from(excelbase64Data, 'base64');
 
         // 2. Process bytes array natively out of memory space
         const workbook = xlsx.read(fileBuffer, { type: 'buffer' });
